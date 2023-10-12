@@ -1,18 +1,17 @@
 
- 
 const getDPD = async () => {
     const id = new URLSearchParams(window.location.search).get('id')
-    const parametros = id.split(',')
+    const parametros = id.split('/')
 
-    let ruta = parametros[0] + (parametros.length == 2 ? "/" + parametros[1] : "" )
+    let ruta = parametros[0]
+    if (parametros.length > 1 ) ruta += "/" + parametros[1]
+    if (parametros.length > 2 ) ruta += "/" + parametros[2]
 
-
-
-
+    console.log(ruta)
     const data = await fetch(`https://oaemdl.es/onpe_sweb_php/participacion/${ruta}`)
     
     if(data.status == 200){
-        const DPD =await (data.json());
+        const dpd =await data.json()
         let html =
         `
            <tr class="titulo_tabla">
@@ -24,20 +23,19 @@ const getDPD = async () => {
               <td>ELECTORES HÁBILES</td>
             </tr>
                     `
-        DPD.forEach (fila => {
-          
+                     
+        dpd.forEach (fila => {
+          let  ruta_dpd = ruta + ',' + fila.DPD
           html +=
-                    ` <tr onclick="location.href='./participacion_total.html?id=Nacional,${fila.DPD}'" onmouseover="this.style.cursor = &quot;pointer&quot;; this.style.color = &quot;grey&quot;" onmouseout="this.style.color = &quot;black&quot;" style="cursor: pointer; color: black;">
+                    ` <tr onclick="location.href='./participacion_total.html?id=${ruta_dpd}'" onmouseover="this.style.cursor = &quot;pointer&quot;; this.style.color = &quot;grey&quot;" onmouseout="this.style.color = &quot;black&quot;" style="cursor: pointer; color: black;">
                           <td>${fila.DPD}</td>
                           <td>${fila.TV}</td>
-                          <td>${fila.PIV}</td>
+                          <td>${fila.PTV}</td>
                           <td>${fila.TA}</td>
                           <td>${fila.PTA}</td>
                           <td>${fila.EH}</td>
-                      </tr>
-                        
+                      </tr>                     
                         `
-
         });
 
         html += 
@@ -52,7 +50,7 @@ const getDPD = async () => {
             `
 
 
-        document.getElementById('resultados').innerHTML = html ;
+        document.getElementById("resultados").innerHTML = html 
 
     }
 }
