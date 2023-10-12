@@ -1,10 +1,18 @@
 
  
-const getDepartamentos = async () => {
-    const data = await fetch(`https://oaemdl.es/onpe_sweb_php/participacion/Nacional`)
+const getDPD = async () => {
+    const id = new URLSearchParams(window.location.search).get('id')
+    const parametros = id.split(',')
+
+    let ruta = parametros[0] + (parametros.length == 2 ? "/" + parametros[1] : "" )
+
+
+
+
+    const data = await fetch(`https://oaemdl.es/onpe_sweb_php/participacion/${ruta}`)
     
     if(data.status == 200){
-        const Departamentos =await (data.json());
+        const DPD =await (data.json());
         let html =
         `
            <tr class="titulo_tabla">
@@ -16,31 +24,31 @@ const getDepartamentos = async () => {
               <td>ELECTORES HÁBILES</td>
             </tr>
                     `
-        Departamentos.forEach (Departamento => {
+        DPD.forEach (fila => {
           
           html +=
-                       ` <tr onclick="location.href='./participacion_total.html?id=nacional,AMAZONAS'" onmouseover="this.style.cursor = &quot;pointer&quot;; this.style.color = &quot;grey&quot;" onmouseout="this.style.color = &quot;black&quot;" style="cursor: pointer; color: black;">
-                          <td>${Departamento.DPD}</td>
-                          <td>${Departamento.TV}</td>
-                          <td>${Departamento.PIV}</td>
-                          <td>${Departamento.TA}</td>
-                          <td>${Departamento.PTA}</td>
-                          <td>${Departamento.EH}</td>
-                        </tr>
+                    ` <tr onclick="location.href='./participacion_total.html?id=Nacional,${fila.DPD}'" onmouseover="this.style.cursor = &quot;pointer&quot;; this.style.color = &quot;grey&quot;" onmouseout="this.style.color = &quot;black&quot;" style="cursor: pointer; color: black;">
+                          <td>${fila.DPD}</td>
+                          <td>${fila.TV}</td>
+                          <td>${fila.PIV}</td>
+                          <td>${fila.TA}</td>
+                          <td>${fila.PTA}</td>
+                          <td>${fila.EH}</td>
+                      </tr>
                         
                         `
 
         });
 
         html += 
-            `             <tr>
+            `       <tr>
                           <td>TOTALES</td>
                           <td>17,953,367</td>
                           <td>81.543%</td>
                           <td>4,063,663</td>
                           <td>18.457%</td>
                           <td>22,017,030</td>
-                        </tr>
+                     </tr>
             `
 
 
@@ -50,6 +58,6 @@ const getDepartamentos = async () => {
 }
 
 
-getDepartamentos();
+getDPD();
 
 
