@@ -8,9 +8,18 @@ const getDPD = async () => {
     if (parametros.length > 2 ) ruta += "/" + parametros[2]
 
     console.log(ruta)
-    const data = await fetch(`https://oaemdl.es/onpe_sweb_php/participacion/Nacional`)
+    const data = await fetch(`https://oaemdl.es/onpe_sweb_php/participacion/${ruta}`)
     //${ruta}
-    if ( data.status == 200 ){
+
+    const aNacional = ['Ambito', 'Departamento', 'Provincia', 'Distrito']
+    const aExtranjero = ['Ambito', 'Continente', 'País', 'Ciudad']
+    let ambito = ''
+    for( i=0; i< parametros.length; i++ )
+        ambito += (parametros[0] == 'Nacional'  ? aNacional [i] ? : aExtranjero [i] ) + ' : ' + parametros[i] + '</br>';
+
+    document.getElementById('ambito').innerHTML = ambito
+
+    if ( data.status == 200 && parametros.length < 4 ){
         const dpd =await data.json()
         let html =
         `
